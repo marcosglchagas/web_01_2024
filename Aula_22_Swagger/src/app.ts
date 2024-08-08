@@ -1,7 +1,7 @@
 import express from 'express';
 import {RegisterRoutes } from './route/routes';
-import { setupSwagger} from './config/swagger';
-import { cadastrarProduto, atualizarProduto, deletarProduto, filtrarProduto, listarTodosProduto } from './controller/ProductController';
+//import { setupSwagger} from './config/swagger';
+//import { cadastrarProduto, atualizarProduto, deletarProduto, filtrarProduto, listarTodosProduto } from './controller/ProductController';
 
 const app = express();
 
