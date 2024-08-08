@@ -1,25 +1,32 @@
 import { Request, Response } from "express";
 import { ProductService } from "../service/ProductService";
+import { BasicResponseDto } from "../model/dto/BasicResponseDto";
+import { Route ,Post, Body, Res, Controller, Tags, TsoaResponse} from "tsoa";
+import { ProductRequestDto } from "../model/dto/ProductRequestDto";
 
-const productService = new ProductService();
+@Route("product")
+@Tags("product")
+export class ProductController extends Controller{
+productService = new ProductService();
 
-export async function cadastrarProduto (req: Request, res: Response){
+@Post()
+async  cadastrarProduto (
+    @Body() dto:ProductRequestDto,
+    @Res() fail: TsoaResponse <400, BasicResponseDto>,
+    @Res() success: TsoaResponse <201, BasicResponseDto>
+): Promise<void> {
+        
     try {
-        const novoProduto = await productService.cadastrarProduto(req.body);
-        res.status(201).json(
-            {
-                mensagem:"Produto adicionado com sucesso!",
-                produto:novoProduto
-            }
-        );
-    } catch (error: any) {
-        res.status(400).json({ message: error.message});
+        const product = await this.productService.cadastrarProduto(dto);
+        return success(201, new BasicResponseDto("Produto criado com Sucesso!", product));
+    }catch(error: any) {
+        return fail(400, new BasicResponseDto (error.message, undefined));
     }
 };
 
-export async function atualizarProduto (req: Request, res: Response){
+async  atualizarProduto (req: Request, res: Response){
     try {
-        const produto = await productService.atualizarProduto(req.body);
+        const produto = await this.productService.atualizarProduto(req.body);
         res.status(200).json(
             {
                 mensagem:"Produto atualizado com sucesso!",
@@ -31,9 +38,9 @@ export async function atualizarProduto (req: Request, res: Response){
     }
 };
 
-export async function deletarProduto (req: Request, res: Response){
+async  deletarProduto (req: Request, res: Response){
     try {
-        const produto = await productService.deletarProduto(req.body);
+        const produto = await this.productService.deletarProduto(req.body);
         res.status(200).json(
             {
                 mensagem:"Produto deletado com sucesso!",
@@ -45,9 +52,9 @@ export async function deletarProduto (req: Request, res: Response){
     }
 };
 
-export async function filtrarProduto (req: Request, res: Response){
+async  filtrarProduto (req: Request, res: Response){
     try {
-        const produto = await productService.filtrarProduto(req.query.id);
+        const produto = await this.productService.filtrarProduto(req.query.id);
         res.status(200).json(
             {
                 mensagem:"Produto encontrado com sucesso!",
@@ -59,9 +66,9 @@ export async function filtrarProduto (req: Request, res: Response){
     }
 };
 
-export async function listarTodosProduto (req: Request, res: Response){
+async  listarTodosProduto (req: Request, res: Response){
     try {
-        const produtos = await productService.listarTodosProdutos();
+        const produtos = await this.productService.listarTodosProdutos();
         res.status(200).json(
             {
                 mensagem:"Produtos listados com sucesso!",
@@ -71,4 +78,5 @@ export async function listarTodosProduto (req: Request, res: Response){
     } catch (error: any) {
         res.status(400).json({ message: error.message});
     }
+}
 };
